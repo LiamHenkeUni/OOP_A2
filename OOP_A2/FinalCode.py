@@ -8,9 +8,25 @@ This is my own work as defined by the University's Academic Misconduct Policy.
 '''
 
 class Laboratory:
-    def __init__(self):
-        pass
-    def apple(self):
-        """Create this."""
-        pass
-help(Laboratory)
+    pass
+
+class Alchemist:
+    pass
+
+class Potion:
+    pass
+
+class SuperPotion(Potion):
+    pass
+
+class ExtremePotion(Potion):
+    pass
+
+class Reagent:
+    pass
+
+class Herb(Reagent):
+    pass
+
+class Catalyst(Reagent):
+    pass
