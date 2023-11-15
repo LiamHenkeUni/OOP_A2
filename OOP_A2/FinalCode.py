@@ -8,25 +8,33 @@ This is my own work as defined by the University's Academic Misconduct Policy.
 '''
 
 class Laboratory:
-    pass
+    def __init__(self, potions, herbs, catalysts):
+        pass
 
 class Alchemist:
-    pass
+    def __init__(self, attack, strength, defense, magic, ranged, necromancy, laboratory, recipes):
+        pass
 
 class Potion:
-    pass
+    def __init__(self, name, stat, boost):
+        pass
 
 class SuperPotion(Potion):
-    pass
+    def __init__(self, name, stat, boost, herb, catalyst):
+        pass
 
 class ExtremePotion(Potion):
-    pass
+    def __init__(self, name, stat, boost, reagent, potion):
+        pass
 
 class Reagent:
-    pass
+    def __init__(self, name, potency):
+        pass
 
 class Herb(Reagent):
-    pass
+    def __init__(self, name, potency, grimy):
+        pass
 
 class Catalyst(Reagent):
-    pass
+    def __init__(self, name, potency, quality):
+        pass
