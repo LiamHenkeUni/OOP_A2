@@ -62,7 +62,7 @@ class Potion:
         self.__boost = boost
 
     def calculateBoost(self):
-        pass
+        return 0.0
 
     def getName(self):
         return self.__name
@@ -150,7 +150,8 @@ class Laboratory:
                 return f"Potion {name} successfully created."
             else:
                 return(f"Not enough ingredients for {name}")
-
+        else:
+            return f"Invalid potion type: {type}."
         
 
     def addReagent(self, reagent: Reagent, amount: int):
@@ -159,7 +160,7 @@ class Laboratory:
         elif isinstance(reagent, Catalyst):
             self.__catalysts.extend([reagent] * amount)
         else:
-            print("Invalid reagent type.")
+            raise ValueError("Invalid reagent type.")
 
     def refineReagent(self):
         for herb in self.__herbs:
@@ -213,7 +214,8 @@ class Alchemist:
             
 
             # Call the mixPotion method in the Laboratory
-            print(self.getLaboratory().mixPotion(name, a[0], a[1], potion_info[1], potion_info[2]))
+            result = self.getLaboratory().mixPotion(name, a[0], a[1], potion_info[1], potion_info[2])
+            return result
         else:
             return "Invalid recipe."
 
@@ -222,10 +224,13 @@ class Alchemist:
             stat = potion.getStat()
             boost = potion.calculateBoost()
 
-            current_stat = getattr(self, f"_{type(self).__name__}__{stat.lower()}")
+            
+            current_stat = getattr(self, f"_{type(self).__name__}__{stat.lower()}", 0)
+
+            
             setattr(self, f"_{type(self).__name__}__{stat.lower()}", current_stat + boost)
 
-            return(f"Drank {potion.getName()} potion. {stat} increased by {boost}.")
+            return f"Drank {potion.getName()} potion. {stat} increased by {boost}."
             
     def collectReagent(self, reagent: Reagent, amount: int):
         self.__laboratory.addReagent(reagent, amount)
