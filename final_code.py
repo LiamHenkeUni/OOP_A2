@@ -181,24 +181,6 @@ class Alchemist:
         self.__necromancy = necromancy
         self.__laboratory = laboratory
         self.__recipes = recipes
-    
-    def getAttack(self):
-        return self.__attack
-
-    def getStrength(self):
-        return self.__strength
-    
-    def getDefense(self):
-        return self.__defense
-    
-    def getMagic(self):
-        return self.__magic
-    
-    def getRanged(self):
-        return self.__ranged
-    
-    def getNecromancy(self):
-        return self.__necromancy
 
     def getLaboratory(self):
         return self.__laboratory
