@@ -131,44 +131,27 @@ class Laboratory:
         return self.__catalysts
     
     def mixPotion(self, name: str, type: str, stat: str, primaryIngredient: str, secondaryIngredient: str):
-        primary_found = False
-        secondary_found = False
 
-        primary_herb = None
-        secondary_catalyst = None
-
-        for herb in self.__herbs:
-            if herb.getName() == primaryIngredient:
-                primary_found = True
-                primary_herb = herb
-            elif herb.getName() == secondaryIngredient:
-                secondary_found = True
-
-        for catalyst in self.__catalysts:
-            if catalyst.getName() == primaryIngredient:
-                primary_found = True
-            elif catalyst.getName() == secondaryIngredient:
-                secondary_found = True
-                secondary_catalyst = catalyst
-
-        # Check if both primary and secondary ingredients are found
-        if primary_found and secondary_found:
-            if type == "Super":
-                potion = SuperPotion(name, stat, 0.0, primary_herb, secondary_catalyst)
-            elif type == "Extreme":
-                potion = ExtremePotion(name, stat, 0.0, reagent, secondary_catalyst)
+        herbs = [herb.getName() for herb in self.get_herbs()]
+        catalysts = [catalysts.getName() for catalysts in self.get_catalysts()]
+        if type == "Super":
+            if primaryIngredient in herbs and secondaryIngredient in catalysts:
+                potion = SuperPotion(name, stat, 0.0, primaryIngredient, secondaryIngredient)
+                self.__potions.append(potion)
+                return f"Potion {name} successfully created."
+                
             else:
-                print("Invalid potion type.")
-                return
+                return f"Not enough ingredients for {name}"
 
-            self.__potions.append(potion)
-            print(f"Potion {name} successfully created.")
+        elif type == "Extreme":
+            if primaryIngredient in herbs or primaryIngredient in catalysts:
+                potion = ExtremePotion(name, stat, 0.0, primaryIngredient, secondaryIngredient)
+                self.__potions.append(potion)
+                return f"Potion {name} successfully created."
+            else:
+                return(f"Not enough ingredients for {name}")
 
-            # Remove used ingredients from the laboratory
-            self.__herbs.remove(primary_herb)
-            self.__catalysts.remove(secondary_catalyst)
-        else:
-            print("Insufficient ingredients to create the potion.")
+        
 
     def addReagent(self, reagent: Reagent, amount: int):
         if isinstance(reagent, Herb):
@@ -187,9 +170,6 @@ class Laboratory:
             if isinstance(catalyst, Catalyst):
                 catalyst.refine()
 
-    def getPotions(self):
-        return self.__potions
-    
 class Alchemist:
     def __init__(self, attack: int, strength: int, defense: int, magic: int, ranged: int, necromancy: int, laboratory: Laboratory, recipes: dict):
         self.__attack = attack
@@ -230,12 +210,12 @@ class Alchemist:
             potion_info = self.__recipes[recipe]
             name, primary_ingredient, secondary_ingredient = potion_info
             a = name.split(" ")
-            print(a)
+            
 
             # Call the mixPotion method in the Laboratory
-            self.getLaboratory().mixPotion(name, a[0], a[1], potion_info[1], potion_info[2])
+            print(self.getLaboratory().mixPotion(name, a[0], a[1], potion_info[1], potion_info[2]))
         else:
-            print("Invalid recipe.")
+            return "Invalid recipe."
 
     def drinkPotion(self, potion: Potion):
         if isinstance(potion, Potion):
@@ -245,80 +225,10 @@ class Alchemist:
             current_stat = getattr(self, f"_{type(self).__name__}__{stat.lower()}")
             setattr(self, f"_{type(self).__name__}__{stat.lower()}", current_stat + boost)
 
-            print(f"Drank {potion.getName()} potion. {stat} increased by {boost}.")
+            return(f"Drank {potion.getName()} potion. {stat} increased by {boost}.")
             
     def collectReagent(self, reagent: Reagent, amount: int):
         self.__laboratory.addReagent(reagent, amount)
-
+        
     def refineReagent(self):
         self.__laboratory.refineReagent()
-
-
-
-# Create an Alchemist and a Laboratory
-alchemist = Alchemist(80, 90, 70, 60, 85, 40, Laboratory([], [], []), {"Super Attack": ["Super Attack", "Irit", "Eye of Newt"],
-    "Super Strength": ["Super Strength", "Kwuarm", "Limpwurt Root"],
-    "Super Defence": ["Super Defence", "Cadantine", "White Berries"],
-    "Super Magic": ["Super Magic", "Lantadyme", "Potato Cactus"],
-    "Super Ranging": ["Super Ranging", "Dwarf Weed", "Wine of Zamorak"],
-    "Super Necromancy": ["Super Necromancy", "Arbuck", "Blood of Orcus"],
-    "Extreme Attack": ["Extreme Attack", "Avantoe", "Super Attack"],
-    "Extreme Strength": ["Extreme Strength", "Dwarf Weed", "Super Strength"],
-    "Extreme Defence": ["Extreme Defence", "Lantadyme", "Super Defence"],
-    "Extreme Magic": ["Extreme Magic", "Ground Mud Rune", "Super Magic"],
-    "Extreme Ranging": ["Extreme Ranging", "Grenwall Spike", "Super Ranging"],
-    "Extreme Necromancy": ["Extreme Necromancy", "Ground Miasma Rune", "Super Necromancy"],
-})
-
-# Create herbs
-arbuck_herb = Herb("Arbuck", 2.6)
-avantoe_herb = Herb("Avantoe", 3.0)
-cadantine_herb = Herb("Cadantine", 1.5)
-dwarf_weed_herb = Herb("Dwarf Weed", 2.5)
-irit_herb = Herb("Irit", 1.0)
-kwuarm_herb = Herb("Kwuarm", 1.2)
-lantadyme_herb = Herb("Lantadyme", 2.0)
-torstol_herb = Herb("Torstol", 4.5)
-
-# Create catalysts
-eye_of_newt_catalyst = Catalyst("Eye of Newt", 4.3, 1.0)
-limpwurt_root_catalyst = Catalyst("Limpwurt Root", 3.6, 1.7)
-white_berries_catalyst = Catalyst("White Berries", 1.2, 2.0)
-potato_cactus_catalyst = Catalyst("Potato Cactus", 7.3, 0.1)
-wine_of_zamorak_catalyst = Catalyst("Wine of Zamorak", 1.7, 5.0)
-blood_of_orcus_catalyst = Catalyst("Blood of Orcus", 4.5, 2.2)
-ground_mud_rune_catalyst = Catalyst("Ground Mud Rune", 2.1, 6.7)
-grenwall_spike_catalyst = Catalyst("Grenwall Spike", 6.3, 4.9)
-ground_miasma_rune_catalyst = Catalyst("Ground Miasma Rune", 3.3, 5.2)
-
-# Add herbs and catalysts to the laboratory
-alchemist.getLaboratory().addReagent(arbuck_herb, 5)
-alchemist.getLaboratory().addReagent(avantoe_herb, 5)
-alchemist.getLaboratory().addReagent(cadantine_herb, 5)
-alchemist.getLaboratory().addReagent(dwarf_weed_herb, 5)
-alchemist.getLaboratory().addReagent(irit_herb, 5)
-alchemist.getLaboratory().addReagent(kwuarm_herb, 5)
-alchemist.getLaboratory().addReagent(lantadyme_herb, 5)
-alchemist.getLaboratory().addReagent(torstol_herb, 5)
-
-alchemist.getLaboratory().addReagent(eye_of_newt_catalyst, 5)
-alchemist.getLaboratory().addReagent(limpwurt_root_catalyst, 5)
-alchemist.getLaboratory().addReagent(white_berries_catalyst, 5)
-alchemist.getLaboratory().addReagent(potato_cactus_catalyst, 5)
-alchemist.getLaboratory().addReagent(wine_of_zamorak_catalyst, 5)
-alchemist.getLaboratory().addReagent(blood_of_orcus_catalyst, 5)
-alchemist.getLaboratory().addReagent(ground_mud_rune_catalyst, 5)
-alchemist.getLaboratory().addReagent(grenwall_spike_catalyst, 5)
-alchemist.getLaboratory().addReagent(ground_miasma_rune_catalyst, 5)
-
-
-
-for recipe in alchemist.getRecipes():
-    alchemist.mixPotion(recipe)
-
-# Print the current state of the laboratory
-print("\nCurrent state of the laboratory:")
-print("Herbs:", [herb.getName() for herb in alchemist.getLaboratory().get_herbs()])
-print("Catalysts:", [catalyst.getName() for catalyst in alchemist.getLaboratory().get_catalysts()])
-print("Potions:", [potion.getName() for potion in alchemist.getLaboratory().get_potions()])
-
