@@ -212,8 +212,6 @@ class Alchemist:
             name, primary_ingredient, secondary_ingredient = potion_info
             a = name.split(" ")
             
-
-            # Call the mixPotion method in the Laboratory
             result = self.getLaboratory().mixPotion(name, a[0], a[1], potion_info[1], potion_info[2])
             return result
         else:
